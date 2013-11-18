@@ -15,7 +15,7 @@ MOUNT_TYPE		= '"ext3"'
 
 CC=g++
 
-CPPFLAGS = -g -Wall -Wextra \
+CPPFLAGS = -g -Wall -Wextra -std=c++11 \
 	-DHAVE_GZIP=$(HAVE_GZIP) \
 	-DHAVE_LINUX_ATTR=$(HAVE_LINUX_ATTR) \
 	-DHAVE_LINUX_MOUNT=$(HAVE_LINUX_MOUNT) \
