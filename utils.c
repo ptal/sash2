@@ -836,6 +836,8 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 			*cpOut++ = ch;
 		}
 
+		test();
+
 		/*
 		 * Make sure that quoting is terminated properly.
 		 */
