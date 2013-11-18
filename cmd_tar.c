@@ -3,6 +3,11 @@
  * Permission is granted to use, distribute, or modify this source,
  * provided that this copyright notice remains intact.
  *
+ * Modified:
+ * Copyright (c) 2013 by Pierre Talbot
+ * Permission is granted to use, distribute, or modify this source,
+ * provided that this copyright notice remains intact.
+ *
  * The "tar" built-in command.
  * This allows creation, extraction, and listing of tar files.
  */

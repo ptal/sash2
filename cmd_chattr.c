@@ -3,6 +3,11 @@
  * Permission is granted to use, distribute, or modify this source,
  * provided that this copyright notice remains intact.
  *
+ * Modified:
+ * Copyright (c) 2013 by Pierre Talbot
+ * Permission is granted to use, distribute, or modify this source,
+ * provided that this copyright notice remains intact.
+ *
  * The "chattr" and "lsattr" built-in commands.
  * These commands are optionally built into sash.
  * They manipulate the important ext2 file system file attribute flags.
