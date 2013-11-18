@@ -15,7 +15,7 @@ MOUNT_TYPE		= '"ext3"'
 
 CC=g++
 
-CFLAGS = -g -Wall -Wextra \
+CPPFLAGS = -g -Wall -Wextra \
 	-DHAVE_GZIP=$(HAVE_GZIP) \
 	-DHAVE_LINUX_ATTR=$(HAVE_LINUX_ATTR) \
 	-DHAVE_LINUX_MOUNT=$(HAVE_LINUX_MOUNT) \
@@ -28,10 +28,10 @@ BINDIR = /bin
 MANDIR = /usr/man/man1
 
 OBJS = sash.o cmds.o cmd_dd.o cmd_ed.o cmd_grep.o cmd_ls.o cmd_tar.o \
-	cmd_gzip.o cmd_find.o cmd_file.o cmd_chattr.o cmd_ar.o utils.o
+	cmd_gzip.o cmd_find.o cmd_file.o cmd_chattr.o cmd_ar.o utils.o eval-upmc.o
 
 sash:	$(OBJS)
-	$(CC) -o sash $(OBJS) $(LIBS)
+	$(CC) $(CPPFLAGS) -o sash $(OBJS) $(LIBS)
 
 clean:
 	rm -f $(OBJS) sash
