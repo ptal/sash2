@@ -649,6 +649,7 @@ BOOL
 makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 {
 	const char *		argument;
+	const char *		envvar; 
 	char *			cp;
 	char *			cpOut;
 	char *			newStrings;
@@ -661,6 +662,7 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 	int			quote;
 	BOOL			quotedWildCards;
 	BOOL			unquotedWildCards;
+	BOOL			isAEnvironmentVariable;
 
 	static int		stringsLength;
 	static char *		strings;
@@ -719,6 +721,19 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 		unquotedWildCards = FALSE;
 
 		/*
+		 * An environment variable always begin with a $.
+		 */
+		if(*cp == '$')
+		{
+			isAEnvironmentVariable = TRUE;
+			++cp;
+		}
+		else
+		{
+			isAEnvironmentVariable = FALSE;
+		}
+
+		/*
 		 * Loop over the string collecting the next argument while
 		 * looking for quoted strings or quoted characters, and
 		 * remembering whether there are any wildcard characters
@@ -773,6 +788,12 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 			 */
 			if (isWildCard(ch))
 			{
+				if(isAEnvironmentVariable)
+				{
+					fprintf(stderr, "It doesn't make sense to use a wildcard"
+						" inside an environment variable. Use \\ to escape.\n");
+					return FALSE;
+				}
 				if (quote)
 					quotedWildCards = TRUE;
 				else
@@ -798,6 +819,13 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 			if ((quote == '\0') && ((ch == '\'') || (ch == '"')))
 			{
 				quote = ch;
+
+				if(isAEnvironmentVariable)
+				{
+					fprintf(stderr, "It doesn't make sense to use a quote"
+						" inside an environment variable. Use \\ to escape.\n");
+					return FALSE;
+				}
 
 				continue;
 			}
@@ -865,6 +893,20 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 
 				return FALSE;
 			}
+		}
+		/*
+		 * Expand the argument into the matching environment variable.
+		 */
+		else if(isAEnvironmentVariable)
+		{
+			envvar = getenv(argument);
+			if(envvar == NULL)
+			{
+				printf("Warning: Empty environment variable \"%s\".", argument);
+				envvar = "";
+			}
+			fileTable = &envvar;
+			fileCount = 1;
 		}
 		else
 		{
