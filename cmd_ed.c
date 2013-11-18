@@ -471,24 +471,24 @@ subCommand(const char * cmd, NUM num1, NUM num2)
 	cp = strchr(cp, delim);
 
 	if (cp)
-		*cp++ = '\0';
-	else
-		cp = "";
-
-	while (*cp) switch (*cp++)
 	{
-		case 'g':
-			globalFlag = TRUE;
-			break;
+		*cp++ = '\0';
 
-		case 'p':
-			printFlag = TRUE;
-			break;
+		while (*cp) switch (*cp++)
+		{
+			case 'g':
+				globalFlag = TRUE;
+				break;
 
-		default:
-			fprintf(stderr, "Unknown option for substitute\n");
+			case 'p':
+				printFlag = TRUE;
+				break;
 
-			return;
+			default:
+				fprintf(stderr, "Unknown option for substitute\n");
+
+				return;
+		}
 	}
 
 	if (*oldStr == '\0')
@@ -645,7 +645,7 @@ findString( const LINE * lp, const char * str, LEN len, LEN offset)
 
 	while (left >= len)
 	{
-		ncp = memchr(cp, *str, left);
+		ncp = (const char*)memchr(cp, *str, left);
 
 		if (ncp == NULL)
 			return -1;
@@ -842,7 +842,7 @@ initEdit(void)
 	int	i;
 
 	bufSize = INITBUF_SIZE;
-	bufBase = malloc(bufSize);
+	bufBase = (char*)malloc(bufSize);
 
 	if (bufBase == NULL)
 	{
@@ -949,7 +949,7 @@ readLines(const char * file, NUM num)
 			break;
 		}
 
-		cp = memchr(bufPtr, '\n', bufUsed);
+		cp = (char*)memchr(bufPtr, '\n', bufUsed);
 
 		if (cp)
 		{
@@ -980,7 +980,7 @@ readLines(const char * file, NUM num)
 		if (bufUsed >= bufSize)
 		{
 			len = (bufSize * 3) / 2;
-			cp = realloc(bufBase, len);
+			cp = (char*)realloc(bufBase, len);
 
 			if (cp == NULL)
 			{
@@ -1143,7 +1143,7 @@ printLines(NUM num1, NUM num2, BOOL expandFlag)
 		 * Show control characters and characters with the
 		 * high bit set specially.
 		 */
-		cp = lp->data;
+		cp = (const unsigned char*)(lp->data);
 		count = lp->len;
 
 		if ((count > 0) && (cp[count - 1] == '\n'))

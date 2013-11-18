@@ -358,7 +358,6 @@ readHeader(const TarHeader * hp, int fileCount, const char ** fileTable)
 	int		mode;
 	int		uid;
 	int		gid;
-	int		checkSum;
 	long		size;
 	time_t		mtime;
 	const char *	name;
@@ -394,7 +393,6 @@ readHeader(const TarHeader * hp, int fileCount, const char ** fileTable)
 	gid = getOctal(hp->gid, sizeof(hp->gid));
 	size = getOctal(hp->size, sizeof(hp->size));
 	mtime = getOctal(hp->mtime, sizeof(hp->mtime));
-	checkSum = getOctal(hp->checkSum, sizeof(hp->checkSum));
 
 	if ((mode < 0) || (uid < 0) || (gid < 0) || (size < 0))
 	{

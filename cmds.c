@@ -43,7 +43,7 @@ do_echo(int argc, const char ** argv)
 
 
 void
-do_pwd(int argc, const char ** argv)
+do_pwd(int, const char **)
 {
 	char	buf[PATH_LEN];
 
@@ -96,7 +96,7 @@ do_mkdir(int argc, const char ** argv)
 
 
 void
-do_mknod(int argc, const char ** argv)
+do_mknod(int, const char ** argv)
 {
 	const char *	cp;
 	int		mode;
@@ -161,7 +161,7 @@ do_rmdir(int argc, const char ** argv)
 
 
 void
-do_sync(int argc, const char ** argv)
+do_sync(int /*argc*/, const char **)
 {
 	sync();
 }
@@ -509,17 +509,21 @@ void
 do_mount(int argc, const char ** argv)
 {
 	const char *	str;
+#if HAVE_LINUX_MOUNT || HAVE_BSD_MOUNT
 	const char *	type;
 	int		flags;
+#endif
 
 	argc--;
 	argv++;
 
+#if HAVE_LINUX_MOUNT || HAVE_BSD_MOUNT
 	type = MOUNT_TYPE;
+#endif
 
 #if	HAVE_LINUX_MOUNT
 	flags = MS_MGC_VAL;
-#else
+#elif HAVE_BSD_MOUNT
 	flags = 0;
 #endif
 
@@ -538,7 +542,10 @@ do_mount(int argc, const char ** argv)
 					return;
 				}
 
-				type = *argv++;
+#if HAVE_LINUX_MOUNT || HAVE_BSD_MOUNT
+				type = *argv;
+#endif
+				argv++;
 				argc--;
 				break;
 
@@ -634,7 +641,7 @@ do_mount(int argc, const char ** argv)
 
 
 void
-do_umount(int argc, const char ** argv)
+do_umount(int /*argc*/, const char ** /*argv*/)
 {
 #if	HAVE_LINUX_MOUNT
 	if (umount(argv[1]) < 0)
@@ -667,7 +674,7 @@ do_umount(int argc, const char ** argv)
 
 
 void
-do_cmp(int argc, const char ** argv)
+do_cmp(int /*argc*/, const char ** argv)
 {
 	int		fd1;
 	int		fd2;
@@ -991,7 +998,7 @@ do_sum(int argc, const char ** argv)
 
 
 void
-do_exit(int argc, const char ** argv)
+do_exit(int /*argc*/, const char ** /*argv*/)
 {
 	if (getpid() == 1)
 	{
@@ -1005,7 +1012,7 @@ do_exit(int argc, const char ** argv)
 
 
 void
-do_setenv(int argc, const char ** argv)
+do_setenv(int /*argc*/, const char ** argv)
 {
 	const char *	name;
 	const char *	value;
@@ -1018,7 +1025,7 @@ do_setenv(int argc, const char ** argv)
 	 * The value given to putenv must remain around, so we must malloc it.
 	 * Note: memory is not reclaimed if the same variable is redefined.
 	 */
-	str = malloc(strlen(name) + strlen(value) + 2);
+	str = (char*)malloc(strlen(name) + strlen(value) + 2);
 
 	if (str == NULL)
 	{
@@ -1040,7 +1047,7 @@ do_printenv(int argc, const char ** argv)
 {
 	const char **	env;
 	extern char **	environ;
-	int		len;
+	unsigned int		len;
 
 	env = (const char **) environ;
 
@@ -1172,7 +1179,7 @@ do_kill(int argc, const char ** argv)
 
 
 void
-do_where(int argc, const char ** argv)
+do_where(int /*argc*/, const char ** argv)
 {
 	const char *	program;
 	const char *	dirName;

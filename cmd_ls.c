@@ -392,10 +392,10 @@ listFile(
 		strcpy(cp, modeString(mode));
 		cp += strlen(cp);
 
-		sprintf(cp, "%3d ", statBuf->st_nlink);
+		sprintf(cp, "%3lu ", statBuf->st_nlink);
 		cp += strlen(cp);
 
-		if (!userIdKnown || (statBuf->st_uid != userId))
+		if (!userIdKnown || (statBuf->st_uid != (unsigned int)userId))
 		{
 			pwd = getpwuid(statBuf->st_uid);
 
@@ -411,7 +411,7 @@ listFile(
 		sprintf(cp, "%-8s ", userName);
 		cp += strlen(cp);
 
-		if (!groupIdKnown || (statBuf->st_gid != groupId))
+		if (!groupIdKnown || (statBuf->st_gid != (unsigned int)groupId))
 		{
 			grp = getgrgid(statBuf->st_gid);
 
@@ -526,7 +526,7 @@ addListName(const char * fileName)
 	 */
 	if (listUsed >= listSize)
 	{
-		newList = realloc(list,
+		newList = (char**)realloc(list,
 			((sizeof(char **)) * (listSize + LISTSIZE)));
 
 		if (newList == NULL)

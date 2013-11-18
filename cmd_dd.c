@@ -73,7 +73,7 @@ do_dd(int argc, const char ** argv)
 	while (--argc > 0)
 	{
 		str = *++argv;
-		cp = strchr(str, '=');
+		cp = (char*)strchr(str, '=');
 
 		if (cp == NULL)
 		{
@@ -185,9 +185,9 @@ do_dd(int argc, const char ** argv)
 
 	buf = localBuf;
 
-	if (blockSize > sizeof(localBuf))
+	if ((unsigned int)blockSize > sizeof(localBuf))
 	{
-		buf = malloc(blockSize);
+		buf = (char*)malloc(blockSize);
 
 		if (buf == NULL)
 		{

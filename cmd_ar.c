@@ -582,7 +582,7 @@ shortNameMatchesSysV(const char * name)
 #define MEMB_NAME_ALLOC(n)					\
 	do							\
 	{							\
-		arch->name = malloc(n);				\
+		arch->name = (char*)malloc(n);				\
 		if (!arch->name)				\
 		{						\
 			fprintf(stderr, "Out of memory\n");	\
@@ -661,14 +661,14 @@ canonicalize(Archive * arch, const struct ar_hdr * hdr)
 		const char *	p;
 		size_t		len;
 
-		if (n >= strlen(arch->nameTable))
+		if ((size_t)n >= strlen((const char*)arch->nameTable))
 		{
 			fprintf(stderr, "Longname index too large\n");
 
 			return FALSE;
 		}
 
-		longname = arch->nameTable + n;
+		longname = (const char*)arch->nameTable + n;
 
 		p = strchr(longname, '/');
 
@@ -847,7 +847,7 @@ readSpecialMember(Archive * arch)
 			return FALSE;
 		}
 
-		arch->nameTable = malloc(len + 1);
+		arch->nameTable = (unsigned char*)malloc(len + 1);
 
 		if (!arch->nameTable)
 		{
@@ -958,7 +958,7 @@ writeFile(const Archive * arch, int outfd)
 	{
 		ssize_t cc;
 
-		cc = read(arch->fd, buf, MIN(n, sizeof(buf)));
+		cc = read(arch->fd, buf, MIN((size_t)n, sizeof(buf)));
 
 		if (cc == -1)
 		{
@@ -975,7 +975,7 @@ writeFile(const Archive * arch, int outfd)
 			return FALSE;
 		}
 
-		if (fullWrite(outfd, buf, cc) < 0)
+		if (fullWrite(outfd, (const char*)buf, cc) < 0)
 		{
 			fprintf(stderr, "Write error: %s\n", strerror(errno));
 

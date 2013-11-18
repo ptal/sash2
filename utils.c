@@ -683,7 +683,7 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 
 	if (len > stringsLength)
 	{
-		newStrings = realloc(strings, len);
+		newStrings = (char*)realloc(strings, len);
 
 		if (newStrings == NULL)
 		{

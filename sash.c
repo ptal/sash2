@@ -491,7 +491,13 @@ main(int argc, const char ** argv)
 	 * Default our path if it is not set.
 	 */
 	if (getenv("PATH") == NULL)
-		putenv("PATH=/bin:/usr/bin:/sbin:/usr/sbin:/etc");
+	{
+		static const char* const_path = "PATH=/bin:/usr/bin:/sbin:/usr/sbin:/etc";
+		size_t path_size = strlen(const_path);
+		char* path_env = (char*)malloc(path_size+1);
+		strncpy(path_env, const_path, path_size);
+		putenv(path_env);
+	}
 
 	/*
 	 * If the alias flag is set then define all aliases.
@@ -1026,7 +1032,7 @@ do_alias(int argc, const char ** argv)
 	if (!makeString(argc - 2, argv + 2, buf, CMD_LEN))
 		return;
 
-	value = malloc(strlen(buf) + 1);
+	value = (char*)malloc(strlen(buf) + 1);
 
 	if (value == NULL)
 	{
@@ -1072,7 +1078,7 @@ do_alias(int argc, const char ** argv)
 
 	alias = &aliasTable[aliasCount];
 
-	alias->name = malloc(strlen(name) + 1);
+	alias->name = (char*)malloc(strlen(name) + 1);
 
 	if (alias->name == NULL)
 	{
@@ -1093,7 +1099,7 @@ do_alias(int argc, const char ** argv)
  * using the names without the dash.
  */
 void
-do_aliasall(int argc, const char **argv)
+do_aliasall(int /*argc*/, const char** /*argv*/)
 {
 	const CommandEntry *	entry;
 	const char *		name;
@@ -1139,7 +1145,7 @@ findAlias(const char * name)
 
 
 void
-do_source(int argc, const char ** argv)
+do_source(int /*argc*/, const char ** argv)
 {
 	readFile(argv[1]);
 }
@@ -1181,7 +1187,7 @@ do_prompt(int argc, const char ** argv)
 	if (!makeString(argc - 1, argv + 1, buf, CMD_LEN))
 		return;
 
-	cp = malloc(strlen(buf) + 2);
+	cp = (char*)malloc(strlen(buf) + 2);
 
 	if (cp == NULL)
 	{
@@ -1239,7 +1245,7 @@ showPrompt(void)
 
 
 static void
-catchInt(int val)
+catchInt(int /*val*/)
 {
 	signal(SIGINT, catchInt);
 
@@ -1251,7 +1257,7 @@ catchInt(int val)
 
 
 static void
-catchQuit(int val)
+catchQuit(int /*val*/)
 {
 	signal(SIGQUIT, catchQuit);
 
