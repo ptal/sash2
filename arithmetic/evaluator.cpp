@@ -5,6 +5,7 @@
 */
 
 #include "evaluator.hpp"
+#include "parser.hpp"
 
 namespace sash{
 namespace math{
@@ -13,36 +14,62 @@ divide_by_zero::divide_by_zero()
 : std::logic_error("Division by zero detected.")
 {}
 
-int evaluator::operator()(arithmetic_type value) const
+ast::arithmetic_type evaluator::operator()(ast::arithmetic_type value) const
 {
   return value;
 }
 
-int evaluator::operator()(const add_op& binary) const
+ast::arithmetic_type evaluator::operator()(const ast::add_op& expr) const
 {
-  return boost::apply_visitor(evaluator(), binary.left)
-       + boost::apply_visitor(evaluator(), binary.right);
+  return boost::apply_visitor(evaluator(), expr.left)
+       + boost::apply_visitor(evaluator(), expr.right);
 }
 
-int evaluator::operator()(const sub_op& binary) const
+ast::arithmetic_type evaluator::operator()(const ast::sub_op& expr) const
 {
-  return boost::apply_visitor(evaluator(), binary.left)
-       - boost::apply_visitor(evaluator(), binary.right);
+  return boost::apply_visitor(evaluator(), expr.left)
+       - boost::apply_visitor(evaluator(), expr.right);
 }
 
-int evaluator::operator()(const mul_op& binary) const
+ast::arithmetic_type evaluator::operator()(const ast::mul_op& expr) const
 {
-  return boost::apply_visitor(evaluator(), binary.left)
-       * boost::apply_visitor(evaluator(), binary.right);
+  return boost::apply_visitor(evaluator(), expr.left)
+       * boost::apply_visitor(evaluator(), expr.right);
 }
 
-int evaluator::operator()(const div_op& binary) const
+ast::arithmetic_type evaluator::operator()(const ast::div_op& expr) const
 {
-  arithmetic_type right_value = boost::apply_visitor(evaluator(), binary.right);
+  ast::arithmetic_type right_value = boost::apply_visitor(evaluator(), expr.right);
   if(right_value == 0)
     throw divide_by_zero();
-  return boost::apply_visitor(evaluator(), binary.left)
+  return boost::apply_visitor(evaluator(), expr.left)
        / right_value;
+}
+
+ast::arithmetic_type evaluator::operator()(const ast::neg_op& expr) const
+{
+  return -boost::apply_visitor(evaluator(), expr.expr);
+}
+
+ast::arithmetic_type eval_expression(const std::string& expr)
+{
+  static const grammar_type parser;
+
+  // At this point we generate the iterator pair
+  iterator_type first(expr.begin());
+  iterator_type last(expr.end());
+
+  ast::expression arith_ast;
+  bool r = boost::spirit::qi::parse(first, last, parser, arith_ast);
+  if (r && first == last)
+  {
+    static const evaluator calculator;
+    return boost::apply_visitor(calculator, arith_ast);
+  }
+  else
+  {
+    throw std::invalid_argument("The arithmetic expression is malformed.\n");
+  }
 }
 
 }} // namespace sash::math

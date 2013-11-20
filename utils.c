@@ -13,6 +13,7 @@
 #include <dirent.h>
 #include <utime.h>
 
+#include "arithmetic/evaluator.hpp"
 
 /*
  * A chunk of data.
@@ -899,6 +900,12 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 		 */
 		else if(isAEnvironmentVariable)
 		{
+			try{
+				std::cout << sash::math::eval_expression(std::string(argument)) << std::endl;
+			}catch(const std::exception& e){
+				std::cerr << e.what() << std::endl;
+				return FALSE;
+			}
 			envvar = getenv(argument);
 			if(envvar == NULL)
 			{

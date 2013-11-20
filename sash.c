@@ -14,7 +14,6 @@
 
 #include "sash.h"
 
-
 static const char * const	version = "3.7";
 
 
