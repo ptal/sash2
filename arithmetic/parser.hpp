@@ -45,6 +45,7 @@ private:
   rule<ast::neg_op> neg_expr;
   rule<ast::expression> term;
   rule<ast::expression> factor;
+  rule<long> envvar_expr;
 };
 
 // iterator type used to expose the underlying input stream.

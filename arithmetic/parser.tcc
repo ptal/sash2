@@ -19,6 +19,7 @@
 // #define BOOST_SPIRIT_QI_DEBUG
 #include "parser.hpp"
 #include <boost/spirit/include/phoenix.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace sash{
 namespace math{
@@ -27,11 +28,30 @@ namespace bs = boost::spirit;
 namespace qi = boost::spirit::qi;
 namespace phx = boost::phoenix;
 
+long envvar_to_long(std::vector<char>& var_name)
+{
+  var_name.push_back('\0');
+  char *envvar = getenv(var_name.data());
+  if(envvar == NULL)
+  {
+    throw std::runtime_error("Empty environment variable inside arithmetic expression.");
+  }
+  try
+  {
+    return boost::lexical_cast<long>(envvar, strlen(envvar));
+  }
+  catch(...)
+  {
+    throw std::runtime_error("Non-arithmetic variable inside arithmetic expression.");
+  }
+}
+
 template <typename Iterator>
 grammar<Iterator>::grammar()
   : grammar::base_type(expression, "arithmetic expression")
 {
-    /**
+  using boost::spirit::ascii::alnum;
+/**
   * These rules permit the automatic generation of semantic rules (AST
   * creation) because they are typed. (see the parser.hpp to look at the
   * type.)
@@ -41,10 +61,13 @@ grammar<Iterator>::grammar()
 
   factor %=
         qi::ulong_
+      | envvar_expr
       | ('(' >> expression >> ')')
       | neg_expr
       | ('+' >> factor)
       ;
+
+  envvar_expr =  ('$' > *alnum) [qi::_val = phx::bind(&envvar_to_long, qi::_1)];
 
   add_expr %= (term >> '+' >> expression) ;
   sub_expr %= (term >> '-' >> expression) ;
