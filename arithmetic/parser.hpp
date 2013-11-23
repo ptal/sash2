@@ -46,6 +46,7 @@ private:
   rule<ast::expression> term;
   rule<ast::expression> factor;
   rule<long> envvar_expr;
+  rule<std::string> var_expr;
 };
 
 // iterator type used to expose the underlying input stream.

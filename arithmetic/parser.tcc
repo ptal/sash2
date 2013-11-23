@@ -28,10 +28,9 @@ namespace bs = boost::spirit;
 namespace qi = boost::spirit::qi;
 namespace phx = boost::phoenix;
 
-long envvar_to_long(std::vector<char>& var_name)
+long envvar_to_long(const std::string& var_name)
 {
-  var_name.push_back('\0');
-  char *envvar = getenv(var_name.data());
+  char *envvar = getenv(var_name.c_str());
   if(envvar == NULL)
   {
     throw std::runtime_error("Empty environment variable inside arithmetic expression.");
@@ -51,11 +50,13 @@ grammar<Iterator>::grammar()
   : grammar::base_type(expression, "arithmetic expression")
 {
   using boost::spirit::ascii::alnum;
-/**
+  /**
   * These rules permit the automatic generation of semantic rules (AST
   * creation) because they are typed. (see the parser.hpp to look at the
   * type.)
   */
+  // arithmetic %= function_def | expression;
+  // function_def %= var_expr > '(' > list_args > ')' > '=' > expression;
   expression %= add_expr | sub_expr | term;
   term       %= mul_expr | div_expr | factor;
 
@@ -67,13 +68,16 @@ grammar<Iterator>::grammar()
       | ('+' >> factor)
       ;
 
-  envvar_expr =  ('$' > *alnum) [qi::_val = phx::bind(&envvar_to_long, qi::_1)];
+  envvar_expr =  ('$' > var_expr) [qi::_val = phx::bind(&envvar_to_long, qi::_1)] ;
 
   add_expr %= (term >> '+' >> expression) ;
   sub_expr %= (term >> '-' >> expression) ;
   mul_expr %= (factor >> '*' >> term) ;
   div_expr %= (factor >> "\\" >> term) ;
   neg_expr %= ('-' >> factor) ;
+
+  var_expr = (*alnum) [qi::_val = 
+    phx::construct<std::string>(phx::begin(qi::_1), phx::end(qi::_1))] ;
 
   BOOST_SPIRIT_DEBUG_NODES(
           (expression)
@@ -84,6 +88,7 @@ grammar<Iterator>::grammar()
           (mul_expr)
           (div_expr)
           (neg_expr)
+          (var_expr)
       );
 
   using namespace qi::labels;
