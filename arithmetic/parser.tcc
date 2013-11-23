@@ -50,6 +50,7 @@ grammar<Iterator>::grammar()
   : grammar::base_type(expression, "arithmetic expression")
 {
   using boost::spirit::ascii::alnum;
+  using boost::spirit::ascii::string;
   /**
   * These rules permit the automatic generation of semantic rules (AST
   * creation) because they are typed. (see the parser.hpp to look at the
@@ -63,6 +64,7 @@ grammar<Iterator>::grammar()
   factor %=
         qi::ulong_
       | envvar_expr
+      | if_expr
       | ('(' >> expression >> ')')
       | neg_expr
       | ('+' >> factor)
@@ -75,6 +77,10 @@ grammar<Iterator>::grammar()
   mul_expr %= (factor >> '*' >> term) ;
   div_expr %= (factor >> "\\" >> term) ;
   neg_expr %= ('-' >> factor) ;
+
+  if_expr %= "if" >> (if_body % string("else if")) >> ("else" > expression) ;
+  if_body %= bool_expr >> ("then" > expression);
+  bool_expr %= bs::bool_ ;
 
   var_expr = (*alnum) [qi::_val = 
     phx::construct<std::string>(phx::begin(qi::_1), phx::end(qi::_1))] ;
