@@ -51,6 +51,15 @@ ast::arithmetic_type evaluator::operator()(const ast::neg_op& expr) const
   return -boost::apply_visitor(evaluator(), expr.expr);
 }
 
+ast::arithmetic_type evaluator::operator()(const ast::if_expr& expr) const
+{
+  for(const ast::if_body& body : expr.if_cases)
+  {
+    if(body.condition) return boost::apply_visitor(evaluator(), body.expr);
+  }
+  return boost::apply_visitor(evaluator(), expr.else_case);
+}
+
 ast::arithmetic_type eval_expression(const std::string& expr)
 {
   static const grammar_type parser;
@@ -68,7 +77,8 @@ ast::arithmetic_type eval_expression(const std::string& expr)
   }
   else
   {
-    throw std::invalid_argument("The arithmetic expression is malformed.\n");
+    std::string s(first, last);
+    throw std::invalid_argument("The arithmetic expression is malformed (" + s + ")");
   }
 }
 

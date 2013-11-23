@@ -17,6 +17,7 @@
 
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/variant.hpp>
+#include <boost/optional.hpp>
 
 namespace sash{
 namespace math{
@@ -27,10 +28,12 @@ struct subTag;
 struct mulTag;
 struct divTag;
 
+// Forward declaration to define the expression variant.
 template <class OpTag>
 struct binary_op;
 
 struct neg_op;
+struct if_expr;
 
 typedef binary_op<addTag> add_op;
 typedef binary_op<subTag> sub_op;
@@ -38,6 +41,7 @@ typedef binary_op<mulTag> mul_op;
 typedef binary_op<divTag> div_op;
 
 typedef long arithmetic_type;
+typedef bool boolean_expr;
 
 typedef boost::variant<
       arithmetic_type
@@ -46,6 +50,7 @@ typedef boost::variant<
     , boost::recursive_wrapper<mul_op>
     , boost::recursive_wrapper<div_op>
     , boost::recursive_wrapper<neg_op>
+    , boost::recursive_wrapper<if_expr>
 > expression;
 
 template <class OpTag>
@@ -76,12 +81,53 @@ struct neg_op
   neg_op(const neg_op&) = default;
 };
 
+struct if_body
+{
+  boolean_expr condition;
+  expression expr;
+
+  if_body(const boolean_expr& condition, const expression& expr)
+  : condition(condition)
+  , expr(expr)
+  {}
+
+  if_body() = default;
+  if_body(const if_body&) = default;
+};
+
+struct if_expr
+{
+  std::vector<if_body> if_cases; // contains the if and the "else if"
+  expression else_case;
+
+  if_expr(const std::vector<if_body>& if_cases, const expression& else_case)
+  : if_cases(if_cases)
+  , else_case(else_case)
+  {}
+
+  if_expr() = default;
+  if_expr(const if_expr&) = default;
+};
+
 }}} // namespace sash::math::ast
 
 // Fusion AST adaptation.
+// This permit Boost.Spirit to automatically construct AST from the parsing rules.
 BOOST_FUSION_ADAPT_STRUCT(
   sash::math::ast::neg_op,
   (sash::math::ast::expression, expr)
+);
+
+BOOST_FUSION_ADAPT_STRUCT(
+  sash::math::ast::if_body,
+  (sash::math::ast::boolean_expr, condition)
+  (sash::math::ast::expression, expr)
+);
+
+BOOST_FUSION_ADAPT_STRUCT(
+  sash::math::ast::if_expr,
+  (std::vector<sash::math::ast::if_body>, if_cases)
+  (sash::math::ast::expression, else_case)
 );
 
 BOOST_FUSION_ADAPT_TPL_STRUCT(

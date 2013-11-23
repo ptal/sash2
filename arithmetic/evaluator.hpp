@@ -31,6 +31,8 @@ public:
   ast::arithmetic_type operator()(const ast::mul_op& expr) const;
   ast::arithmetic_type operator()(const ast::div_op& expr) const;
   ast::arithmetic_type operator()(const ast::neg_op& expr) const;
+  ast::arithmetic_type operator()(const ast::if_expr& expr) const;
+  bool operator()(const ast::boolean_expr& expr) const;
 };
 
 ast::arithmetic_type eval_expression(const std::string& expr);
