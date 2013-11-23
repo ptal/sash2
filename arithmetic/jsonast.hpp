@@ -11,8 +11,7 @@
 
 #include <stdexcept>
 #include <string>
-#include "../json/json.h"
-#include "../json/writer.h"
+#include <json/json.h>
 
 namespace sash{
 namespace json{

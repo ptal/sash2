@@ -21,11 +21,32 @@
 #include <grp.h>
 #include <utime.h>
 #include <errno.h>
+#include <string>
+#include <iostream>
+#include "arithmetic/jsonast.hpp"
 
 #if	HAVE_LINUX_MOUNT
 #include <linux/fs.h>
 #endif
 
+void
+do_jsonast(int argc, const char ** argv)
+{
+	BOOL	first;
+	first = TRUE;
+
+	while (argc-- > 1)
+	{
+		std::cout << sash::json::eval_expression(std::string(*(++argv))) << std::endl;
+		if (!first)
+			fputc(' ', stdout);
+
+		first = FALSE;
+		//fputs(*(++argv), stdout);
+	}
+
+	fputc('\n', stdout);
+}
 
 void
 do_echo(int argc, const char ** argv)

@@ -93,6 +93,7 @@ extern	void	do_umount(int argc, const char ** argv);
 extern	void	do_setenv(int argc, const char ** argv);
 extern	void	do_pwd(int argc, const char ** argv);
 extern	void	do_echo(int argc, const char ** argv);
+extern	void	do_jsonast(int argc, const char ** argv);
 extern	void	do_kill(int argc, const char ** argv);
 extern	void	do_grep(int argc, const char ** argv);
 extern	void	do_file(int argc, const char ** argv);

@@ -13,7 +13,7 @@ HAVE_LINUX_MOUNT	= 0
 HAVE_BSD_MOUNT		= 0
 MOUNT_TYPE		= '"ext3"'
 
-CC=g++
+CC=g++-4.8
 
 CPPFLAGS = -g3 -Wall -Wextra -std=c++11 \
 	-DHAVE_GZIP=$(HAVE_GZIP) \
@@ -21,18 +21,17 @@ CPPFLAGS = -g3 -Wall -Wextra -std=c++11 \
 	-DHAVE_LINUX_MOUNT=$(HAVE_LINUX_MOUNT) \
 	-DHAVE_BSD_MOUNT=$(HAVE_BSD_MOUNT) \
 	-DMOUNT_TYPE=$(MOUNT_TYPE) \
-#        -I ~/Downloads/boost_1_55_0/
+	-I /home/imediava/Downloads/jsoncpp-src-0.5.0/include
 
-LIBS = -lz
+LIBS = -lz -llibjson_linux-gcc-4.8_libmt
 
 BINDIR = /bin
 MANDIR = /usr/man/man1
 
 OBJS = sash.o cmds.o cmd_dd.o cmd_ed.o cmd_grep.o cmd_ls.o cmd_tar.o \
 	cmd_gzip.o cmd_find.o cmd_file.o cmd_chattr.o cmd_ar.o utils.o eval-upmc.o \
-	arithmetic/evaluator.o arithmetic/parser.o json/autolink.h json/config.h \
-        json/features.h json/forwards.h json/json.h json/reader.h json/value.h \
-        json/writer.h arithmetic/jsonast.o
+	arithmetic/evaluator.o arithmetic/parser.o \
+        arithmetic/jsonast.o
 
 sash:	$(OBJS)
 	$(CC) $(CPPFLAGS) -o sash $(OBJS) $(LIBS)

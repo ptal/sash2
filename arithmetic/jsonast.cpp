@@ -4,8 +4,7 @@
  *
 */
 
-#include "../json/writer.h"
-#include "../json/json.h"
+#include <json/json.h>
 #include "jsonast.hpp"
 #include "parser.hpp"
 

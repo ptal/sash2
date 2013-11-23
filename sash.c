@@ -117,6 +117,11 @@ static const CommandEntry	commandEntryTable[] =
 		"Echo the arguments",
 		"[args] ..."
 	},
+	{
+		"-jsonast",	do_jsonast,	1,	INFINITE_ARGS,
+		"Convert an expression to a json ast",
+		"[args]"
+	},
 
 	{
 		"-ed",		do_ed,		1,	2,
