@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 by Pierre Talbot
+/* Copyright (c) 2013 by Pierre Talbot & Inigo Mediavilla
  * Permission is granted to use, distribute, or modify this source,
  * provided that this copyright notice remains intact.
  *
@@ -11,18 +11,6 @@
 namespace sash{
 namespace json{
 
-/*Json::Value event;   
-Json::Value vec(Json::arrayValue);
-vec.append(Json::Value(1));
-vec.append(Json::Value(2));
-vec.append(Json::Value(3));
-
-event["competitors"]["home"]["name"] = "Liverpool";
-event["competitors"]["away"]["code"] = 89223;
-event["competitors"]["away"]["name"] = "Aston Villa";
-event["competitors"]["away"]["code"]=vec;
-*/
-                                
 Json::Value jsonast::operator()(math::ast::arithmetic_type value) const
 {
   return Json::Value((Json::UInt)value);   
@@ -85,6 +73,13 @@ Json::Value jsonast::operator()(const math::ast::if_expr& expr) const
   return event;
 }
 
+/**
+ *  Main function that takes an expression
+ *  parsed and it passes it to a visitor that generates
+ *  a json representation of th AST.
+ *
+ *  @return Json representation of the AST.
+ * */
 Json::Value eval_expression(const std::string& expr)
 {
   static const math::grammar_type parser;
@@ -106,4 +101,4 @@ Json::Value eval_expression(const std::string& expr)
   }
 }
 
-}} // namespace sash::math
+}} // namespace sash::json

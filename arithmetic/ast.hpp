@@ -1,6 +1,5 @@
 /*
-  Copyright (C) 2013 by Pierre Talbot <ptalbot@hyc.io>
-  Part of the Battle for Wesnoth Project http://www.wesnoth.org/
+  Copyright (C) 2013 by Pierre Talbot <ptalbot@hyc.io> & Inigo Mediavilla
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

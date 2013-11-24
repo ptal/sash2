@@ -1,3 +1,8 @@
+# Copyright (c) 2013 by Pierre Talbot & Inigo Mediavilla
+# Permission is granted to use, distribute, or modify this source,
+# provided that this copyright notice remains intact.
+# 
+
 #
 # Makefile for sash
 #
@@ -22,6 +27,7 @@ CPPFLAGS = -g3 -Wall -Wextra -std=c++11 \
 	-DHAVE_BSD_MOUNT=$(HAVE_BSD_MOUNT) \
 	-DMOUNT_TYPE=$(MOUNT_TYPE) \
 
+# jsoncpp should be installed as explained on README-UPMC
 LIBS = -lz -ljson
 
 BINDIR = /bin

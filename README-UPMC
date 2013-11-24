@@ -1,7 +1,3 @@
-Dependencies
-============
-
-Boost.Variant
 
 C++ syntactic tree of arithmetic expressions.
 =============================================
@@ -11,6 +7,24 @@ The classical erroneous cases of evaluation are:
 * Divide by zero: It triggers an exception of type "divide_by_zero".
 * Negative numbers: The representation doesn't allow the user to use negative numbers. However the result can be negative.
 * Operator priority: Handle by the parser.
+
+Dependencies
+===========================
+- Jsoncpp
+- Boost.Variant (1.55)
+
+How to install Boost 
+=============================================
+
+The source files can be downloaded from: 
+
+http://www.boost.org/users/download/
+
+Once the compressed file is decompressed. The following commands should be
+executed:
+
+- ./bootstrap.sh
+- ./b2 install
 
 How to install jsoncpp
 ===============================================

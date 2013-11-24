@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 by Pierre Talbot
+/* Copyright (c) 2013 by Pierre Talbot & Inigo Mediavilla
  * Permission is granted to use, distribute, or modify this source,
  * provided that this copyright notice remains intact.
  *
@@ -60,6 +60,12 @@ ast::arithmetic_type evaluator::operator()(const ast::if_expr& expr) const
   return boost::apply_visitor(evaluator(), expr.else_case);
 }
 
+/**
+ *  Main function that takes an expression
+ *  parsed and it evaluates it.
+ *
+ *  @return The result of evaluation the expression.
+ * */
 ast::arithmetic_type eval_expression(const std::string& expr)
 {
   static const grammar_type parser;
