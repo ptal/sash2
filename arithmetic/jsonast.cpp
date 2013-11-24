@@ -75,11 +75,13 @@ Json::Value jsonast::operator()(const math::ast::neg_op& expr) const
 Json::Value jsonast::operator()(const math::ast::if_expr& expr) const
 {
   Json::Value event;   
-  //for(const ast::if_body& body : expr.if_cases)
-  //{
-   // if(body.condition) return boost::apply_visitor(evaluator(), body.expr);
-  //}
-  //return boost::apply_visitor(evaluator(), expr.else_case);
+  int ifcounter = 0;
+  for(const math::ast::if_body& body : expr.if_cases)
+  {
+     event["if"+ifcounter] = boost::apply_visitor(jsonast(), body.expr);
+     ifcounter++;
+  }
+  event["else"] = boost::apply_visitor(jsonast(), expr.else_case);
   return event;
 }
 
