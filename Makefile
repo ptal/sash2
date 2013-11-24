@@ -13,15 +13,14 @@ HAVE_LINUX_MOUNT	= 0
 HAVE_BSD_MOUNT		= 0
 MOUNT_TYPE		= '"ext3"'
 
-CC=g++-4.8
+CC=g++
 
-CPPFLAGS = -g3 -Wall -Wextra -std=c++11 -v \
+CPPFLAGS = -g3 -Wall -Wextra -std=c++11 \
 	-DHAVE_GZIP=$(HAVE_GZIP) \
 	-DHAVE_LINUX_ATTR=$(HAVE_LINUX_ATTR) \
 	-DHAVE_LINUX_MOUNT=$(HAVE_LINUX_MOUNT) \
 	-DHAVE_BSD_MOUNT=$(HAVE_BSD_MOUNT) \
 	-DMOUNT_TYPE=$(MOUNT_TYPE) \
-	-I /home/imediava/Downloads/jsoncpp-src-0.5.0/include
 
 LIBS = -lz -ljson
 
