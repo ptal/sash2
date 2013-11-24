@@ -56,7 +56,7 @@ grammar<Iterator>::grammar()
   * creation) because they are typed. (see the parser.hpp to look at the
   * type.)
   */
-  // arithmetic %= function_def | expression;
+  // arithmetic = function_def | expression;
   // function_def %= var_expr > '(' > list_args > ')' > '=' > expression;
   expression %= add_expr | sub_expr | term;
   term       %= mul_expr | div_expr | factor;
@@ -75,7 +75,7 @@ grammar<Iterator>::grammar()
   add_expr %= (term >> '+' >> expression) ;
   sub_expr %= (term >> '-' >> expression) ;
   mul_expr %= (factor >> '*' >> term) ;
-  div_expr %= (factor >> "\\" >> term) ;
+  div_expr %= (factor >> '/' >> term) ;
   neg_expr %= ('-' >> factor) ;
 
   if_expr %= "if" >> (if_body % string("else if")) >> ("else" > expression) ;

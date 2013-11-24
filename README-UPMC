@@ -2,6 +2,8 @@ Dependencies
 ============
 
 Boost.Variant
+Boost.Spirit
+jsoncpp
 
 C++ syntactic tree of arithmetic expressions.
 =============================================
@@ -9,11 +11,10 @@ C++ syntactic tree of arithmetic expressions.
 The classical erroneous cases of evaluation are:
 
 * Divide by zero: It triggers an exception of type "divide_by_zero".
-* Negative numbers: The representation doesn't allow the user to use negative numbers. However the result can be negative.
 * Operator priority: Handle by the parser.
 
 How to install jsoncpp
-===============================================
+======================
 
 A version of jsoncpp that can be build with cmake is available at:
 

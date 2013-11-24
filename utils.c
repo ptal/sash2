@@ -14,6 +14,7 @@
 #include <utime.h>
 
 #include "arithmetic/evaluator.hpp"
+#include <boost/lexical_cast.hpp>
 
 /*
  * A chunk of data.
@@ -650,7 +651,8 @@ BOOL
 makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 {
 	const char *		argument;
-	const char *		envvar; 
+	const char *		envvar;
+	char *			arith_expr;
 	char *			cp;
 	char *			cpOut;
 	char *			newStrings;
@@ -664,7 +666,8 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 	BOOL			quotedWildCards;
 	BOOL			unquotedWildCards;
 	BOOL			isAEnvironmentVariable;
-
+	BOOL			isAnArithmeticExpression;
+	BOOL			foundEndingBracket;
 	static int		stringsLength;
 	static char *		strings;
 	static int		argCount;
@@ -726,12 +729,22 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 		 */
 		if(*cp == '$')
 		{
-			isAEnvironmentVariable = TRUE;
 			++cp;
+			if(*cp && *cp == '[')
+			{
+				isAnArithmeticExpression = TRUE;
+				foundEndingBracket = FALSE;
+				++cp;
+			}
+			else
+			{
+				isAEnvironmentVariable = TRUE;
+			}
 		}
 		else
 		{
 			isAEnvironmentVariable = FALSE;
+			isAnArithmeticExpression = FALSE;
 		}
 
 		/*
@@ -744,6 +757,19 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 		{
 			ch = *cp++;
 
+			if(isAnArithmeticExpression && ch == ']')
+			{
+				foundEndingBracket = TRUE;
+				if(*cp == '\0' || isBlank(*cp))
+				{
+					break;
+				}
+				else{
+					fprintf(stderr, "A blank character must follow an arithmetic expression inside [] (\'%c\' found)\n", *cp);
+					return FALSE;
+				}
+			}
+
 			/*
 			 * If we are not in a quote and we see a blank then
 			 * this argument is done.
@@ -755,7 +781,7 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 			 * If we see a backslash then accept the next
 			 * character no matter what it is.
 			 */
-			if (ch == '\\')
+			if (!isAnArithmeticExpression && ch == '\\')
 			{
 				ch = *cp++;
 
@@ -787,7 +813,7 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 			 * remember whether it was seen inside or outside
 			 * of quotes.
 			 */
-			if (isWildCard(ch))
+			if (!isAnArithmeticExpression && isWildCard(ch))
 			{
 				if(isAEnvironmentVariable)
 				{
@@ -843,7 +869,6 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 		if (quote)
 		{
 			fprintf(stderr, "Unmatched quote character\n");
-
 			return FALSE;
 		}
 
@@ -857,6 +882,12 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 
 		while (isBlank(*cp))
  			*cp++ = '\0';
+
+ 		if (isAnArithmeticExpression && !foundEndingBracket)
+ 		{
+ 			fprintf(stderr, "The ending bracket of the arithmetic expression has not been found.");
+ 			return FALSE;
+ 		}
 
 		/*
 		 * If both quoted and unquoted wildcards were used then
@@ -900,12 +931,6 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 		 */
 		else if(isAEnvironmentVariable)
 		{
-			try{
-				std::cout << sash::math::eval_expression(std::string(argument)) << std::endl;
-			}catch(const std::exception& e){
-				std::cerr << e.what() << std::endl;
-				return FALSE;
-			}
 			envvar = getenv(argument);
 			if(envvar == NULL)
 			{
@@ -914,6 +939,20 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 			}
 			fileTable = &envvar;
 			fileCount = 1;
+		}
+		else if(isAnArithmeticExpression)
+		{
+			try{
+				long res = sash::math::eval_expression(std::string(argument));
+				std::string s = boost::lexical_cast<std::string>(res);
+				arith_expr = (char*)malloc(s.size()+1);
+				strcpy(arith_expr, s.c_str());
+				envvar = (const char*)arith_expr;
+				fileTable = &envvar;
+			}catch(const std::exception& e){
+				std::cerr << e.what() << std::endl;
+				return FALSE;
+			}
 		}
 		else
 		{
