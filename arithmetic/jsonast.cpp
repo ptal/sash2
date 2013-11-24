@@ -25,8 +25,7 @@ event["competitors"]["away"]["code"]=vec;
                                 
 Json::Value jsonast::operator()(math::ast::arithmetic_type value) const
 {
-  Json::Value event;   
-  return event;
+  return Json::Value((Json::UInt)value);   
 }
 
 Json::Value jsonast::operator()(const math::ast::add_op& expr) const
@@ -70,6 +69,17 @@ Json::Value jsonast::operator()(const math::ast::neg_op& expr) const
   Json::Value event;   
   event["op"] = "neg";
   event["val"] = boost::apply_visitor(jsonast(), expr.expr);
+  return event;
+}
+
+Json::Value jsonast::operator()(const math::ast::if_expr& expr) const
+{
+  Json::Value event;   
+  //for(const ast::if_body& body : expr.if_cases)
+  //{
+   // if(body.condition) return boost::apply_visitor(evaluator(), body.expr);
+  //}
+  //return boost::apply_visitor(evaluator(), expr.else_case);
   return event;
 }
 

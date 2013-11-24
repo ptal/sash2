@@ -12,6 +12,19 @@ The classical erroneous cases of evaluation are:
 * Negative numbers: The representation doesn't allow the user to use negative numbers. However the result can be negative.
 * Operator priority: Handle by the parser.
 
+How to install jsoncpp
+===============================================
+
+A version of jsoncpp that can be build with cmake is available at:
+
+https://github.com/codebudo/jsoncpp
+
+Then to install the library:
+
+1. Install CMake in your system and make sure it is in your `$PATH` variable.
+2. Open a new terminal an go to jsoncpp directory.
+3. `make`
+4. `sudo make install`
 
 Acknowledgments
 ===============

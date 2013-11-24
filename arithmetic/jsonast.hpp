@@ -25,6 +25,7 @@ public:
   Json::Value operator()(const math::ast::mul_op& expr) const;
   Json::Value operator()(const math::ast::div_op& expr) const;
   Json::Value operator()(const math::ast::neg_op& expr) const;
+  Json::Value operator()(const math::ast::if_expr& expr) const;
 };
 
 Json::Value eval_expression(const std::string& expr);

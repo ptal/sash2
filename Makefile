@@ -15,7 +15,7 @@ MOUNT_TYPE		= '"ext3"'
 
 CC=g++-4.8
 
-CPPFLAGS = -g3 -Wall -Wextra -std=c++11 \
+CPPFLAGS = -g3 -Wall -Wextra -std=c++11 -v \
 	-DHAVE_GZIP=$(HAVE_GZIP) \
 	-DHAVE_LINUX_ATTR=$(HAVE_LINUX_ATTR) \
 	-DHAVE_LINUX_MOUNT=$(HAVE_LINUX_MOUNT) \
@@ -23,7 +23,7 @@ CPPFLAGS = -g3 -Wall -Wextra -std=c++11 \
 	-DMOUNT_TYPE=$(MOUNT_TYPE) \
 	-I /home/imediava/Downloads/jsoncpp-src-0.5.0/include
 
-LIBS = -lz -llibjson_linux-gcc-4.8_libmt
+LIBS = -lz -ljson
 
 BINDIR = /bin
 MANDIR = /usr/man/man1
