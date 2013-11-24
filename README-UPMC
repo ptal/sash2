@@ -1,10 +1,18 @@
+Description
+============================================
+
+This project improves the sash shell with two commands -echo
+and -jsonast that evaluates arithmetic expressions and generates
+the AST of the expressions as a json value.
+
+
 C++ syntactic tree of arithmetic expressions.
 =============================================
 
 The classical erroneous cases of evaluation are:
 
 * Divide by zero: It triggers an exception of type "divide_by_zero".
-* Operator priority: Handle by the parser.
+* Operator priority: At the moment, the operator priority is not well-respected, the AST structure is not good and should be changed.
 
 Dependencies
 ===========================
@@ -39,3 +47,9 @@ Then to install the library:
 3. `make`
 4. `sudo make install`
 
+=======
+Acknowledgments
+===============
+
+* Thanks to the examples provided by Boost.Variant.
+* Thanks to sehe for the help on Boost.Spirit: http://stackoverflow.com/questions/20079648/boostspirit-illegal-backtracking-exception
