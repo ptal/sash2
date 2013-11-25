@@ -1,5 +1,5 @@
 Description
-============================================
+===========
 
 This project improves the sash shell with two commands -echo
 and -jsonast that evaluates arithmetic expressions and generates
@@ -12,19 +12,20 @@ C++ syntactic tree of arithmetic expressions.
 The classical erroneous cases of evaluation are:
 
 * Divide by zero: It triggers an exception of type "divide_by_zero".
-* Operator priority: At the moment, the operator priority is not well-respected, the AST structure is not good and should be changed.
+* Operator priority: 
 
 Grammar
 =======
 
 Dependencies
-===========================
+============
 - Jsoncpp
-- Boost.Variant (1.55)
-- Boost.Spirit (1.55)
+- Boost 1.54
+  (notes: All libraries used are header-only
+          Not tested with Boost version less than 1.54, it might work).
 
 How to install Boost 
-=============================================
+====================
 
 The source files can be downloaded from: 
 
@@ -50,9 +51,9 @@ Then to install the library:
 3. `make`
 4. `sudo make install`
 
-=======
 Acknowledgments
 ===============
 
-* Thanks to the examples provided by Boost.Variant.
+* Thanks to the authors of Boost.Variant for their examples.
+* Thanks to the authors of Boost.Spirit for their examples.
 * Thanks to sehe for the help on Boost.Spirit: http://stackoverflow.com/questions/20079648/boostspirit-illegal-backtracking-exception
