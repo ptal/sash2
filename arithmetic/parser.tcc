@@ -36,7 +36,7 @@ long envvar_to_long(const std::string& var_name)
   }
   try
   {
-    return boost::lexical_cast<long>(envvar, strlen(envvar));
+    return boost::lexical_cast<long>(std::string(envvar, strlen(envvar)));
   }
   catch(...)
   {
@@ -57,8 +57,8 @@ grammar<Iterator>::grammar()
   */
   // arithmetic = function_def | expression;
   // function_def %= var_expr > '(' > list_args > ')' > '=' > expression;
-  expression %= add_expr | sub_expr | term;
-  term       %= mul_expr | div_expr | factor;
+  expression %= add_expr | sub_expr;
+  term       %= mul_expr | div_expr;
 
   factor %=
         qi::ulong_
@@ -69,17 +69,17 @@ grammar<Iterator>::grammar()
       | ('+' >> factor)
       ;
 
-  envvar_expr =  ('$' > var_expr) [qi::_val = phx::bind(&envvar_to_long, qi::_1)] ;
+  envvar_expr =  ('$' > var_expr) [qi::_val = phx::bind(&envvar_to_long, qi::_1)];
 
-  add_expr %= (term >> '+' >> expression) ;
-  sub_expr %= (term >> '-' >> expression) ;
-  mul_expr %= (factor >> '*' >> term) ;
-  div_expr %= (factor >> '/' >> term) ;
-  neg_expr %= ('-' >> factor) ;
+  add_expr %= (term >> *('+' >> term));
+  sub_expr %= (term >> *('-' >> term));
+  mul_expr %= (factor >> *('*' >> factor));
+  div_expr %= (factor >> *('/' >> factor));
+  neg_expr %= ('-' >> factor);
 
   if_expr %= "if" >> (if_body % string("else if")) >> ("else" > expression) ;
   if_body %= bool_expr >> ("then" > expression);
-  bool_expr %= bs::bool_ ;
+  bool_expr %= bs::bool_;
 
   var_expr = (*alnum) [qi::_val = 
     phx::construct<std::string>(phx::begin(qi::_1), phx::end(qi::_1))] ;

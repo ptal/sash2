@@ -57,16 +57,28 @@ struct binary_op
 {
   typedef OpTag operation_type;
 
-  expression left;
-  expression right;
+  std::vector<expression> expr;
 
-  binary_op(const expression& lhs, const expression& rhs)
-  : left(lhs), right(rhs)
+  binary_op(const std::vector<expression>& expr)
+  : expr(expr)
   {}
 
   binary_op() = default;
   binary_op(const binary_op&) = default;
 };
+
+template <class Operation, class OpTag, class Visitor>
+typename Visitor::result_type visit_nary_op(const ast::binary_op<OpTag>& expr, const Visitor& visitor)
+{
+  typedef Visitor::result_type value_type;
+  return std::accumulate(
+    ++std::begin(expr.expr), std::end(expr.expr),
+    boost::apply_visitor(visitor, *std::begin(expr.expr)),
+    [](value_type accu, const ast::expression& e){
+      return Operation::eval(
+        accu,
+        boost::apply_visitor(visitor, e));});
+}
 
 struct neg_op
 {
@@ -132,7 +144,6 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_TPL_STRUCT(
   (OpTag),
   (sash::math::ast::binary_op) (OpTag),
-  (sash::math::ast::expression, left)
-  (sash::math::ast::expression, right)
+  (std::vector<sash::math::ast::expression>, expr)
 );
 #endif // SASH_MATH_AST_HPP

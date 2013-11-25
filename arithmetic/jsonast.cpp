@@ -16,41 +16,6 @@ Json::Value jsonast::operator()(math::ast::arithmetic_type value) const
   return Json::Value((Json::UInt)value);   
 }
 
-Json::Value jsonast::operator()(const math::ast::add_op& expr) const
-{
-  Json::Value event;   
-  event["op"] = "add";
-  event["left"] = boost::apply_visitor(jsonast(), expr.left);
-  event["right"] = boost::apply_visitor(jsonast(), expr.right);
-  return event;
-}
-
-Json::Value jsonast::operator()(const math::ast::sub_op& expr) const
-{
-  Json::Value event;   
-  event["op"] = "sub";
-  event["left"] = boost::apply_visitor(jsonast(), expr.left);
-  event["right"] = boost::apply_visitor(jsonast(), expr.right);
-  return event;
-}
-
-Json::Value jsonast::operator()(const math::ast::mul_op& expr) const
-{
-  Json::Value event;   
-  event["op"] = "mult";
-  event["left"] = boost::apply_visitor(jsonast(), expr.left);
-  event["right"] = boost::apply_visitor(jsonast(), expr.right);
-  return event;
-}
-
-Json::Value jsonast::operator()(const math::ast::div_op& expr) const
-{
-  Json::Value event;   
-  event["op"] = "div";
-  event["left"] = boost::apply_visitor(jsonast(), expr.left);
-  event["right"] = boost::apply_visitor(jsonast(), expr.right);
-  return event;
-}
 
 Json::Value jsonast::operator()(const math::ast::neg_op& expr) const
 {

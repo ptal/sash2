@@ -14,6 +14,9 @@ The classical erroneous cases of evaluation are:
 * Divide by zero: It triggers an exception of type "divide_by_zero".
 * Operator priority: At the moment, the operator priority is not well-respected, the AST structure is not good and should be changed.
 
+Grammar
+=======
+
 Dependencies
 ===========================
 - Jsoncpp

@@ -16,14 +16,35 @@
 namespace sash{
 namespace json{
 
+template <struct OpTag>
+struct json_binary_op
+{
+  typedef Json::Value value_type;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    value_type event;
+    event["op"] = ArithmeticOp<OpTag>::name;
+    event["left"] = v1;
+    event["right"] = ;
+    return event;
+  }
+};
+
 class jsonast : public boost::static_visitor<Json::Value>
 {
 public:
   Json::Value operator()(math::ast::arithmetic_type value) const;
-  Json::Value operator()(const math::ast::add_op& expr) const;
-  Json::Value operator()(const math::ast::sub_op& expr) const;
-  Json::Value operator()(const math::ast::mul_op& expr) const;
-  Json::Value operator()(const math::ast::div_op& expr) const;
+
+	template <class OpTag>
+	Json::Value jsonast::operator()(const math::ast::binary_op<OpTag>& expr) const
+	{
+	  Json::Value event;   
+	  // event["op"] = "div";
+	  // event["left"] = boost::apply_visitor(jsonast(), expr.left);
+	  // event["right"] = boost::apply_visitor(jsonast(), expr.right);
+	  return event;
+	}
+
   Json::Value operator()(const math::ast::neg_op& expr) const;
   Json::Value operator()(const math::ast::if_expr& expr) const;
 };

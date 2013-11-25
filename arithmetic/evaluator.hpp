@@ -11,6 +11,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <iterator>
 
 namespace sash{
 namespace math{
@@ -21,17 +22,80 @@ public:
   divide_by_zero();
 };
 
+template <class OpTag>
+struct ArithmeticOp;
+
+template <>
+struct ArithmeticOp<ast::addTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static const std::string name;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    return v1 + v2;
+  }
+};
+
+template <>
+struct ArithmeticOp<ast::subTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static const std::string name;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    return v1 - v2;
+  }
+};
+
+template <>
+struct ArithmeticOp<ast::mulTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static const std::string name;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    return v1 * v2;
+  }
+};
+
+template <>
+struct ArithmeticOp<ast::divTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static const std::string name;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    if(v2 == 0)
+      throw divide_by_zero();
+    return v1 / v2;
+  }
+};
+
+template<>
+const std::string ArithmeticOp<ast::addTag>::name("add"); 
+template<>
+const std::string ArithmeticOp<ast::subTag>::name("sub");
+template<>
+const std::string ArithmeticOp<ast::mulTag>::name("mul");
+template<>
+const std::string ArithmeticOp<ast::divTag>::name("div");
 
 class evaluator : public boost::static_visitor<ast::arithmetic_type>
 {
 public:
-  ast::arithmetic_type operator()(ast::arithmetic_type value) const;
-  ast::arithmetic_type operator()(const ast::add_op& expr) const;
-  ast::arithmetic_type operator()(const ast::sub_op& expr) const;
-  ast::arithmetic_type operator()(const ast::mul_op& expr) const;
-  ast::arithmetic_type operator()(const ast::div_op& expr) const;
-  ast::arithmetic_type operator()(const ast::neg_op& expr) const;
-  ast::arithmetic_type operator()(const ast::if_expr& expr) const;
+  static const evaluator calculator;
+  typedef ast::arithmetic_type value_type;
+
+  value_type operator()(value_type value) const;
+
+  template <class OpTag>
+  value_type operator()(const ast::binary_op<OpTag>& expr) const
+  {
+    return visit_nary_op<ArithmeticOp<OpTag> >(expr, calculator);
+  }
+
+  value_type operator()(const ast::neg_op& expr) const;
+  value_type operator()(const ast::if_expr& expr) const;
   bool operator()(const ast::boolean_expr& expr) const;
 };
 

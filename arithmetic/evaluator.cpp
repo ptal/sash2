@@ -6,58 +6,35 @@
 
 #include "evaluator.hpp"
 #include "parser.hpp"
+#include <functional>
+
 
 namespace sash{
 namespace math{
+
+const evaluator evaluator::calculator;
 
 divide_by_zero::divide_by_zero()
 : std::logic_error("Division by zero detected.")
 {}
 
-ast::arithmetic_type evaluator::operator()(ast::arithmetic_type value) const
+evaluator::value_type evaluator::operator()(evaluator::value_type value) const
 {
   return value;
 }
 
-ast::arithmetic_type evaluator::operator()(const ast::add_op& expr) const
+evaluator::value_type evaluator::operator()(const ast::neg_op& expr) const
 {
-  return boost::apply_visitor(evaluator(), expr.left)
-       + boost::apply_visitor(evaluator(), expr.right);
+  return -boost::apply_visitor(calculator, expr.expr);
 }
 
-ast::arithmetic_type evaluator::operator()(const ast::sub_op& expr) const
-{
-  return boost::apply_visitor(evaluator(), expr.left)
-       - boost::apply_visitor(evaluator(), expr.right);
-}
-
-ast::arithmetic_type evaluator::operator()(const ast::mul_op& expr) const
-{
-  return boost::apply_visitor(evaluator(), expr.left)
-       * boost::apply_visitor(evaluator(), expr.right);
-}
-
-ast::arithmetic_type evaluator::operator()(const ast::div_op& expr) const
-{
-  ast::arithmetic_type right_value = boost::apply_visitor(evaluator(), expr.right);
-  if(right_value == 0)
-    throw divide_by_zero();
-  return boost::apply_visitor(evaluator(), expr.left)
-       / right_value;
-}
-
-ast::arithmetic_type evaluator::operator()(const ast::neg_op& expr) const
-{
-  return -boost::apply_visitor(evaluator(), expr.expr);
-}
-
-ast::arithmetic_type evaluator::operator()(const ast::if_expr& expr) const
+evaluator::value_type evaluator::operator()(const ast::if_expr& expr) const
 {
   for(const ast::if_body& body : expr.if_cases)
   {
-    if(body.condition) return boost::apply_visitor(evaluator(), body.expr);
+    if(body.condition) return boost::apply_visitor(calculator, body.expr);
   }
-  return boost::apply_visitor(evaluator(), expr.else_case);
+  return boost::apply_visitor(calculator, expr.else_case);
 }
 
 /**
@@ -66,7 +43,7 @@ ast::arithmetic_type evaluator::operator()(const ast::if_expr& expr) const
  *
  *  @return The result of evaluation the expression.
  * */
-ast::arithmetic_type eval_expression(const std::string& expr)
+evaluator::value_type eval_expression(const std::string& expr)
 {
   static const grammar_type parser;
 
