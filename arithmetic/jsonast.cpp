@@ -9,19 +9,29 @@
 #include "parser.hpp"
 
 namespace sash{
+namespace math{
+
+const std::string ArithmeticName<ast::addTag>::name("add");
+const std::string ArithmeticName<ast::subTag>::name("sub");
+const std::string ArithmeticName<ast::mulTag>::name("mul");
+const std::string ArithmeticName<ast::divTag>::name("div");
+
+} // namespace math
+
 namespace json{
+
+const jsonast jsonast::jsonifier;
 
 Json::Value jsonast::operator()(math::ast::arithmetic_type value) const
 {
   return Json::Value((Json::UInt)value);   
 }
 
-
 Json::Value jsonast::operator()(const math::ast::neg_op& expr) const
 {
   Json::Value event;   
   event["op"] = "neg";
-  event["val"] = boost::apply_visitor(jsonast(), expr.expr);
+  event["val"] = boost::apply_visitor(jsonifier, expr.expr);
   return event;
 }
 
@@ -31,10 +41,10 @@ Json::Value jsonast::operator()(const math::ast::if_expr& expr) const
   int ifcounter = 0;
   for(const math::ast::if_body& body : expr.if_cases)
   {
-     event["if"+ifcounter] = boost::apply_visitor(jsonast(), body.expr);
+     event["if"+ifcounter] = boost::apply_visitor(jsonifier, body.expr);
      ifcounter++;
   }
-  event["else"] = boost::apply_visitor(jsonast(), expr.else_case);
+  event["else"] = boost::apply_visitor(jsonifier, expr.else_case);
   return event;
 }
 

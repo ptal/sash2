@@ -36,14 +36,17 @@ private:
 	ast::expression arithmetic_expr;
 
   template <typename Arg> using rule = qi::rule<iterator_type, Arg()>;
+  template <typename Arg, typename... Args> using rule_args
+   = qi::rule<iterator_type, Arg(Args...)>;
+
   rule<ast::expression> expression;
-  rule<ast::add_op> add_expr;
-  rule<ast::sub_op> sub_expr;
-  rule<ast::mul_op> mul_expr;
-  rule<ast::div_op> div_expr;
-  rule<ast::neg_op> neg_expr;
   rule<ast::expression> term;
   rule<ast::expression> factor;
+  rule_args<ast::add_op, ast::expression> add_expr;
+  rule_args<ast::sub_op, ast::expression> sub_expr;
+  rule_args<ast::mul_op, ast::expression> mul_expr;
+  rule_args<ast::div_op, ast::expression> div_expr;
+  rule<ast::neg_op> neg_expr;
   rule<long> envvar_expr;
   rule<std::string> var_expr;
   rule<ast::if_body> if_body;

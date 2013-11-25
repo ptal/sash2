@@ -14,8 +14,8 @@
 #ifndef SASH_MATH_PARSER_DEF_HPP
 #define SASH_MATH_PARSER_DEF_HPP
 
-// #define BOOST_SPIRIT_DEBUG
-// #define BOOST_SPIRIT_QI_DEBUG
+#define BOOST_SPIRIT_DEBUG
+#define BOOST_SPIRIT_QI_DEBUG
 #include "parser.hpp"
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/lexical_cast.hpp>
@@ -57,8 +57,13 @@ grammar<Iterator>::grammar()
   */
   // arithmetic = function_def | expression;
   // function_def %= var_expr > '(' > list_args > ')' > '=' > expression;
-  expression %= add_expr | sub_expr;
-  term       %= mul_expr | div_expr;
+  expression = term [qi::_val = qi::_1] 
+             >> *( add_expr(qi::_val) [qi::_val = qi::_1]
+                 | sub_expr(qi::_val) [qi::_val = qi::_1]);
+
+  term = factor [qi::_val = qi::_1] 
+             >> *( mul_expr(qi::_val) [qi::_val = qi::_1]
+                 | div_expr(qi::_val) [qi::_val = qi::_1]);
 
   factor %=
         qi::ulong_
@@ -71,10 +76,10 @@ grammar<Iterator>::grammar()
 
   envvar_expr =  ('$' > var_expr) [qi::_val = phx::bind(&envvar_to_long, qi::_1)];
 
-  add_expr %= (term >> *('+' >> term));
-  sub_expr %= (term >> *('-' >> term));
-  mul_expr %= (factor >> *('*' >> factor));
-  div_expr %= (factor >> *('/' >> factor));
+  add_expr %= (qi::attr(qi::_r1) >> '+' >> term);
+  sub_expr %= (qi::attr(qi::_r1) >> '-' >> term);
+  mul_expr %= (qi::attr(qi::_r1) >> '*' >> factor);
+  div_expr %= (qi::attr(qi::_r1) >> '/' >> factor);
   neg_expr %= ('-' >> factor);
 
   if_expr %= "if" >> (if_body % string("else if")) >> ("else" > expression) ;

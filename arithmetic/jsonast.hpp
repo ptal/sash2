@@ -14,35 +14,63 @@
 #include <json/json.h>
 
 namespace sash{
+namespace math{
+
+template <class OpTag>
+struct ArithmeticName;
+
+template <>
+struct ArithmeticName<ast::addTag>
+{
+  static const std::string name;
+};
+
+template <>
+struct ArithmeticName<ast::subTag>
+{
+  static const std::string name;
+};
+
+template <>
+struct ArithmeticName<ast::mulTag>
+{
+  static const std::string name;
+};
+
+template <>
+struct ArithmeticName<ast::divTag>
+{
+  static const std::string name;
+};
+
+} // namespace math
+
 namespace json{
 
-template <struct OpTag>
+template <class OpTag>
 struct json_binary_op
 {
   typedef Json::Value value_type;
   static value_type eval(value_type v1, value_type v2)
   {
     value_type event;
-    event["op"] = ArithmeticOp<OpTag>::name;
+    event["op"] = math::ArithmeticName<OpTag>::name;
     event["left"] = v1;
-    event["right"] = ;
+    event["right"] = v2;
     return event;
   }
 };
 
 class jsonast : public boost::static_visitor<Json::Value>
 {
+  static const jsonast jsonifier;
 public:
   Json::Value operator()(math::ast::arithmetic_type value) const;
 
 	template <class OpTag>
-	Json::Value jsonast::operator()(const math::ast::binary_op<OpTag>& expr) const
+	Json::Value operator()(const math::ast::binary_op<OpTag>& expr) const
 	{
-	  Json::Value event;   
-	  // event["op"] = "div";
-	  // event["left"] = boost::apply_visitor(jsonast(), expr.left);
-	  // event["right"] = boost::apply_visitor(jsonast(), expr.right);
-	  return event;
+	  return math::ast::visit_binary_op<json_binary_op<OpTag> >(expr, jsonifier);
 	}
 
   Json::Value operator()(const math::ast::neg_op& expr) const;

@@ -29,7 +29,6 @@ template <>
 struct ArithmeticOp<ast::addTag>
 {
   typedef ast::arithmetic_type value_type;
-  static const std::string name;
   static value_type eval(value_type v1, value_type v2)
   {
     return v1 + v2;
@@ -40,7 +39,6 @@ template <>
 struct ArithmeticOp<ast::subTag>
 {
   typedef ast::arithmetic_type value_type;
-  static const std::string name;
   static value_type eval(value_type v1, value_type v2)
   {
     return v1 - v2;
@@ -51,7 +49,6 @@ template <>
 struct ArithmeticOp<ast::mulTag>
 {
   typedef ast::arithmetic_type value_type;
-  static const std::string name;
   static value_type eval(value_type v1, value_type v2)
   {
     return v1 * v2;
@@ -62,7 +59,6 @@ template <>
 struct ArithmeticOp<ast::divTag>
 {
   typedef ast::arithmetic_type value_type;
-  static const std::string name;
   static value_type eval(value_type v1, value_type v2)
   {
     if(v2 == 0)
@@ -70,15 +66,6 @@ struct ArithmeticOp<ast::divTag>
     return v1 / v2;
   }
 };
-
-template<>
-const std::string ArithmeticOp<ast::addTag>::name("add"); 
-template<>
-const std::string ArithmeticOp<ast::subTag>::name("sub");
-template<>
-const std::string ArithmeticOp<ast::mulTag>::name("mul");
-template<>
-const std::string ArithmeticOp<ast::divTag>::name("div");
 
 class evaluator : public boost::static_visitor<ast::arithmetic_type>
 {
@@ -91,7 +78,7 @@ public:
   template <class OpTag>
   value_type operator()(const ast::binary_op<OpTag>& expr) const
   {
-    return visit_nary_op<ArithmeticOp<OpTag> >(expr, calculator);
+    return ast::visit_binary_op<ArithmeticOp<OpTag> >(expr, calculator);
   }
 
   value_type operator()(const ast::neg_op& expr) const;
