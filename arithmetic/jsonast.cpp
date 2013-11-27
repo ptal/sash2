@@ -16,6 +16,13 @@ const std::string ArithmeticName<ast::subTag>::name("sub");
 const std::string ArithmeticName<ast::mulTag>::name("mul");
 const std::string ArithmeticName<ast::divTag>::name("div");
 
+const std::string ArithmeticName<ast::ltTag>::name("lt");
+const std::string ArithmeticName<ast::gtTag>::name("gt");
+const std::string ArithmeticName<ast::eqTag>::name("eq");
+const std::string ArithmeticName<ast::leTag>::name("le");
+const std::string ArithmeticName<ast::geTag>::name("ge");
+const std::string ArithmeticName<ast::neTag>::name("ne");
+
 } // namespace math
 
 namespace json{

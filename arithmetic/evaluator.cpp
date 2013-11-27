@@ -32,7 +32,7 @@ evaluator::value_type evaluator::operator()(const ast::if_expr& expr) const
 {
   for(const ast::if_body& body : expr.if_cases)
   {
-    if(body.condition)
+    if(boost::apply_visitor(calculator, body.condition))
       return boost::apply_visitor(calculator, body.expr);
   }
   return boost::apply_visitor(calculator, expr.else_case);

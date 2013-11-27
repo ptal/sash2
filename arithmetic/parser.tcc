@@ -29,7 +29,7 @@ namespace phx = boost::phoenix;
 
 template <typename Iterator>
 grammar<Iterator>::grammar()
-  : grammar::base_type(expression, "arithmetic expression")
+  : grammar::base_type(start, "arithmetic expression")
 {
   using boost::spirit::ascii::alnum;
   using boost::spirit::ascii::string;
@@ -40,6 +40,18 @@ grammar<Iterator>::grammar()
   */
   // arithmetic = function_def | expression;
   // function_def %= var_expr > '(' > list_args > ')' > '=' > expression;
+  start %= relational_eq;
+
+  relational_eq = relational_comp [qi::_val = qi::_1]
+              >> *( eq_expr(qi::_val) [qi::_val = qi::_1]
+                  | ne_expr(qi::_val) [qi::_val = qi::_1]);
+
+  relational_comp = expression [qi::_val = qi::_1]
+             >> *( lt_expr(qi::_val) [qi::_val = qi::_1]
+                 | gt_expr(qi::_val) [qi::_val = qi::_1]
+                 | ge_expr(qi::_val) [qi::_val = qi::_1]
+                 | le_expr(qi::_val) [qi::_val = qi::_1]);
+
   expression = term [qi::_val = qi::_1] 
              >> *( add_expr(qi::_val) [qi::_val = qi::_1]
                  | sub_expr(qi::_val) [qi::_val = qi::_1]);
@@ -52,7 +64,7 @@ grammar<Iterator>::grammar()
         qi::ulong_
       | envvar_expr
       | if_expr
-      | ('(' >> expression >> ')')
+      | ('(' >> start >> ')')
       | neg_expr
       | ('+' >> factor)
       ;
@@ -63,15 +75,24 @@ grammar<Iterator>::grammar()
   sub_expr %= (qi::attr(qi::_r1) >> '-' >> term);
   mul_expr %= (qi::attr(qi::_r1) >> '*' >> factor);
   div_expr %= (qi::attr(qi::_r1) >> '/' >> factor);
+  lt_expr %= (qi::attr(qi::_r1) >> '<' >> expression);
+  gt_expr %= (qi::attr(qi::_r1) >> '>' >> expression);
+  eq_expr %= (qi::attr(qi::_r1) >> "==" >> expression);
+  le_expr %= (qi::attr(qi::_r1) >> "=<" >> expression);
+  ge_expr %= (qi::attr(qi::_r1) >> "=>" >> relational_comp);
+  ne_expr %= (qi::attr(qi::_r1) >> "!=" >> relational_comp);
   neg_expr %= ('-' >> factor);
 
-  if_expr %= "if" >> (if_body % string("else if")) >> ("else" > expression) ;
-  if_body %= qi::ulong_ >> ("then" > expression);
+  if_expr %= "if" >> (if_body % string("else if")) >> ("else" > start) ;
+  if_body %= start >> ("then" > start);
 
   var_expr = qi::lexeme[(*alnum)] [qi::_val = 
     phx::construct<std::string>(phx::begin(qi::_1), phx::end(qi::_1))] ;
 
   BOOST_SPIRIT_DEBUG_NODES(
+          (start)
+          (relational_eq)
+          (relational_comp)
           (expression)
           (term)
           (factor)
@@ -80,6 +101,12 @@ grammar<Iterator>::grammar()
           (mul_expr)
           (div_expr)
           (neg_expr)
+          (lt_expr)
+          (gt_expr)
+          (ge_expr)
+          (le_expr)
+          (ne_expr)
+          (eq_expr)
           (var_expr)
       );
 

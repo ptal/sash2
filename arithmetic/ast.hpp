@@ -22,10 +22,24 @@ namespace sash{
 namespace math{
 namespace ast{
 
+// Arithmetic operators.
 struct addTag;
 struct subTag;
 struct mulTag;
 struct divTag;
+
+// Comparison operators.
+struct ltTag;
+struct gtTag;
+struct eqTag;
+struct leTag;
+struct geTag;
+struct neTag;
+
+// Logical operators;
+// struct andTag;
+// struct orTag;
+// struct notTag;
 
 // Forward declaration to define the expression variant.
 template <class OpTag>
@@ -39,6 +53,13 @@ typedef binary_op<subTag> sub_op;
 typedef binary_op<mulTag> mul_op;
 typedef binary_op<divTag> div_op;
 
+typedef binary_op<ltTag> lt_op;
+typedef binary_op<gtTag> gt_op;
+typedef binary_op<eqTag> eq_op;
+typedef binary_op<leTag> le_op;
+typedef binary_op<geTag> ge_op;
+typedef binary_op<neTag> ne_op;
+
 typedef long arithmetic_type;
 
 typedef boost::variant<
@@ -47,6 +68,12 @@ typedef boost::variant<
     , boost::recursive_wrapper<sub_op>
     , boost::recursive_wrapper<mul_op>
     , boost::recursive_wrapper<div_op>
+    , boost::recursive_wrapper<lt_op>
+    , boost::recursive_wrapper<gt_op>
+    , boost::recursive_wrapper<eq_op>
+    , boost::recursive_wrapper<le_op>
+    , boost::recursive_wrapper<ge_op>
+    , boost::recursive_wrapper<ne_op>
     , boost::recursive_wrapper<neg_op>
     , boost::recursive_wrapper<if_expr>
 > expression;
@@ -89,10 +116,10 @@ struct neg_op
 
 struct if_body
 {
-  arithmetic_type condition;
+  expression condition;
   expression expr;
 
-  if_body(const arithmetic_type& condition, const expression& expr)
+  if_body(const expression& condition, const expression& expr)
   : condition(condition)
   , expr(expr)
   {}
@@ -126,7 +153,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
   sash::math::ast::if_body,
-  (sash::math::ast::arithmetic_type, condition)
+  (sash::math::ast::expression, condition)
   (sash::math::ast::expression, expr)
 );
 

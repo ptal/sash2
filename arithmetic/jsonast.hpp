@@ -43,6 +43,43 @@ struct ArithmeticName<ast::divTag>
   static const std::string name;
 };
 
+
+template <>
+struct ArithmeticName<ast::ltTag>
+{
+  static const std::string name;
+};
+
+template <>
+struct ArithmeticName<ast::gtTag>
+{
+  static const std::string name;
+};
+
+template <>
+struct ArithmeticName<ast::eqTag>
+{
+  static const std::string name;
+};
+
+template <>
+struct ArithmeticName<ast::leTag>
+{
+  static const std::string name;
+};
+
+template <>
+struct ArithmeticName<ast::geTag>
+{
+  static const std::string name;
+};
+
+template <>
+struct ArithmeticName<ast::neTag>
+{
+  static const std::string name;
+};
+
 } // namespace math
 
 namespace json{

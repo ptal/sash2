@@ -67,6 +67,66 @@ struct ArithmeticOp<ast::divTag>
   }
 };
 
+template <>
+struct ArithmeticOp<ast::ltTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    return v1 < v2;
+  }
+};
+
+template <>
+struct ArithmeticOp<ast::gtTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    return v1 > v2;
+  }
+};
+
+template <>
+struct ArithmeticOp<ast::eqTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    return v1 == v2;
+  }
+};
+
+template <>
+struct ArithmeticOp<ast::leTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    return v1 <= v2;
+  }
+};
+
+template <>
+struct ArithmeticOp<ast::geTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    return v1 >= v2;
+  }
+};
+
+template <>
+struct ArithmeticOp<ast::neTag>
+{
+  typedef ast::arithmetic_type value_type;
+  static value_type eval(value_type v1, value_type v2)
+  {
+    return v1 != v2;
+  }
+};
+
 class evaluator : public boost::static_visitor<ast::arithmetic_type>
 {
 public:

@@ -42,13 +42,23 @@ private:
   template <typename Arg, typename... Args> using rule_args
    = qi::rule<iterator_type, Arg(Args...), bs::ascii::space_type>;
 
+
+  rule<ast::expression> start;
+  rule<ast::expression> relational_eq;
+  rule<ast::expression> relational_comp;
   rule<ast::expression> expression;
   rule<ast::expression> term;
   rule<ast::expression> factor;
   rule_args<ast::add_op, ast::expression> add_expr;
   rule_args<ast::sub_op, ast::expression> sub_expr;
   rule_args<ast::mul_op, ast::expression> mul_expr;
-  rule_args<ast::div_op, ast::expression> div_expr;
+  rule_args<ast::div_op, ast::expression> div_expr;  
+  rule_args<ast::lt_op, ast::expression> lt_expr;
+  rule_args<ast::gt_op, ast::expression> gt_expr;
+  rule_args<ast::eq_op, ast::expression> eq_expr;
+  rule_args<ast::le_op, ast::expression> le_expr;  
+  rule_args<ast::ge_op, ast::expression> ge_expr;
+  rule_args<ast::ne_op, ast::expression> ne_expr;
   rule<ast::neg_op> neg_expr;
   rule<long> envvar_expr;
   rule<std::string> var_expr;
