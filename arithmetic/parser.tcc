@@ -27,22 +27,7 @@ namespace bs = boost::spirit;
 namespace qi = boost::spirit::qi;
 namespace phx = boost::phoenix;
 
-long envvar_to_long(const std::string& var_name)
-{
-  char *envvar = getenv(var_name.c_str());
-  if(envvar == NULL)
-  {
-    throw std::runtime_error("Empty environment variable inside arithmetic expression.");
-  }
-  try
-  {
-    return boost::lexical_cast<long>(std::string(envvar, strlen(envvar)));
-  }
-  catch(...)
-  {
-    throw std::runtime_error("Non-arithmetic variable inside arithmetic expression.");
-  }
-}
+long envvar_to_long(const std::string& var_name);
 
 template <typename Iterator>
 grammar<Iterator>::grammar()

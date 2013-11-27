@@ -64,7 +64,7 @@ Json::Value eval_expression(const std::string& expr)
   math::iterator_type last(expr.end());
 
   math::ast::expression arith_ast;
-  bool r = boost::spirit::qi::parse(first, last, parser, arith_ast);
+  bool r = boost::spirit::qi::phrase_parse(first, last, parser, boost::spirit::ascii::space, arith_ast);
   if (r && first == last)
   {
     static const jsonast jsonconverter;

@@ -774,7 +774,7 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 			 * If we are not in a quote and we see a blank then
 			 * this argument is done.
 			 */
-			if (isBlank(ch) && (quote == '\0'))
+			if (isBlank(ch) && (quote == '\0') && !isAnArithmeticExpression)
 				break;
 
 			/*

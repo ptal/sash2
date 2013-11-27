@@ -26,7 +26,7 @@ namespace qi = boost::spirit::qi;
 
 template <typename Iterator>
 struct grammar 
-	: qi::grammar<Iterator, ast::expression()>
+	: qi::grammar<Iterator, ast::expression(), bs::ascii::space_type>
 {
 	typedef Iterator iterator_type;
 
@@ -35,9 +35,9 @@ struct grammar
 private:
 	ast::expression arithmetic_expr;
 
-  template <typename Arg> using rule = qi::rule<iterator_type, Arg()>;
+  template <typename Arg> using rule = qi::rule<iterator_type, Arg(), bs::ascii::space_type>;
   template <typename Arg, typename... Args> using rule_args
-   = qi::rule<iterator_type, Arg(Args...)>;
+   = qi::rule<iterator_type, Arg(Args...), bs::ascii::space_type>;
 
   rule<ast::expression> expression;
   rule<ast::expression> term;
