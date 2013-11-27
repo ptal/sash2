@@ -27,8 +27,6 @@ namespace bs = boost::spirit;
 namespace qi = boost::spirit::qi;
 namespace phx = boost::phoenix;
 
-long envvar_to_long(const std::string& var_name);
-
 template <typename Iterator>
 grammar<Iterator>::grammar()
   : grammar::base_type(expression, "arithmetic expression")

@@ -14,6 +14,7 @@
 #include <utime.h>
 
 #include "arithmetic/evaluator.hpp"
+#include "arithmetic/parser.hpp"
 #include <boost/lexical_cast.hpp>
 
 /*
@@ -943,7 +944,8 @@ makeArgs(const char * cmd, int * retArgc, const char *** retArgv)
 		else if(isAnArithmeticExpression)
 		{
 			try{
-				long res = sash::math::eval_expression(std::string(argument));
+				static sash::math::evaluator calculator;
+				long res = sash::math::parse_expression(std::string(argument), calculator);
 				std::string s = boost::lexical_cast<std::string>(res);
 				arith_expr = (char*)malloc(s.size()+1);
 				strcpy(arith_expr, s.c_str());

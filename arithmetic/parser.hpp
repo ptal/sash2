@@ -21,6 +21,9 @@
 namespace sash{
 namespace math{
 
+
+long envvar_to_long(const std::string& var_name);
+
 namespace bs = boost::spirit;
 namespace qi = boost::spirit::qi;
 
@@ -57,6 +60,29 @@ private:
 typedef std::string::const_iterator iterator_type;
 
 typedef grammar<iterator_type> grammar_type;
+
+
+template <class Visitor>
+typename Visitor::result_type parse_expression(const std::string& expr, const Visitor& visitor)
+{
+  static const grammar_type parser;
+
+  // At this point we generate the iterator pair
+  iterator_type first(expr.begin());
+  iterator_type last(expr.end());
+
+  ast::expression arith_ast;
+  bool r = boost::spirit::qi::phrase_parse(first, last, parser, boost::spirit::ascii::space, arith_ast);
+  if (r && first == last)
+  {
+    return boost::apply_visitor(visitor, arith_ast);
+  }
+  else
+  {
+    std::string s(first, last);
+    throw std::invalid_argument("The arithmetic expression is malformed (" + s + ")");
+  }
+}
 
 }} // namespace sash::math
 #endif // SASH_MATH_PARSER_HPP

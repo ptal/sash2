@@ -38,32 +38,4 @@ evaluator::value_type evaluator::operator()(const ast::if_expr& expr) const
   return boost::apply_visitor(calculator, expr.else_case);
 }
 
-/**
- *  Main function that takes an expression
- *  parsed and it evaluates it.
- *
- *  @return The result of evaluation the expression.
- * */
-evaluator::value_type eval_expression(const std::string& expr)
-{
-  static const grammar_type parser;
-
-  // At this point we generate the iterator pair
-  iterator_type first(expr.begin());
-  iterator_type last(expr.end());
-
-  ast::expression arith_ast;
-  bool r = boost::spirit::qi::phrase_parse(first, last, parser, boost::spirit::ascii::space, arith_ast);
-  if (r && first == last)
-  {
-    static const evaluator calculator;
-    return boost::apply_visitor(calculator, arith_ast);
-  }
-  else
-  {
-    std::string s(first, last);
-    throw std::invalid_argument("The arithmetic expression is malformed (" + s + ")");
-  }
-}
-
 }} // namespace sash::math

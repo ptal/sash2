@@ -85,8 +85,6 @@ public:
   value_type operator()(const ast::if_expr& expr) const;
 };
 
-ast::arithmetic_type eval_expression(const std::string& expr);
-
 }} // namespace sash::math
 
 #endif // SASH_MATH_EVALUATOR_HPP

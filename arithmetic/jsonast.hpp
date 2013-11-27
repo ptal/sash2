@@ -77,8 +77,6 @@ public:
   Json::Value operator()(const math::ast::if_expr& expr) const;
 };
 
-Json::Value eval_expression(const std::string& expr);
-
 }} // namespace sash::json
 
 #endif // SASH_MATH_EVALUATOR_HPP

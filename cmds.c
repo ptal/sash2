@@ -24,6 +24,7 @@
 #include <string>
 #include <iostream>
 #include "arithmetic/jsonast.hpp"
+#include "arithmetic/parser.hpp"
 
 #if	HAVE_LINUX_MOUNT
 #include <linux/fs.h>
@@ -34,10 +35,11 @@ do_jsonast(int argc, const char ** argv)
 {
 	BOOL	first;
 	first = TRUE;
+	static sash::json::jsonast jsonifier;
 
 	while (argc-- > 1)
 	{
-		std::cout << sash::json::eval_expression(std::string(*(++argv))) << std::endl;
+		std::cout << sash::math::parse_expression(std::string(*(++argv)), jsonifier) << std::endl;
 		if (!first)
 			fputc(' ', stdout);
 

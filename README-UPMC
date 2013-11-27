@@ -17,6 +17,38 @@ The classical erroneous cases of evaluation are:
 Grammar
 =======
 
+New features
+============
+
+(1) Support the parsing of arithmetic expressions:
+
+* Unary operator -
+* Binary operator *, +, -, /
+* Parenthesis
+* Alternative: if 0 then 1 else if 1 then 3 else 5
+
+(2) A jsonifier of arithmetic expression (as described in (1))
+> -jsonast "1*2-4"
+
+{
+        "left" : 
+        {
+                "left" : 1,
+                "op" : "mul",
+                "right" : 2
+        },
+        "op" : "sub",
+        "right" : 4
+}
+
+(3) Calculation of arithmetic expression (as described in (1))
+
+> -echo $[if 0 then 1-5*2 else 2*4]
+8
+> -echo $[if 1 then 1-5*2 else 2*4]
+-9
+
+
 Dependencies
 ============
 - Jsoncpp

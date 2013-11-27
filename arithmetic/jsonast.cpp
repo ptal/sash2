@@ -48,32 +48,4 @@ Json::Value jsonast::operator()(const math::ast::if_expr& expr) const
   return event;
 }
 
-/**
- *  Main function that takes an expression
- *  parsed and it passes it to a visitor that generates
- *  a json representation of th AST.
- *
- *  @return Json representation of the AST.
- * */
-Json::Value eval_expression(const std::string& expr)
-{
-  static const math::grammar_type parser;
-
-  // At this point we generate the iterator pair
-  math::iterator_type first(expr.begin());
-  math::iterator_type last(expr.end());
-
-  math::ast::expression arith_ast;
-  bool r = boost::spirit::qi::phrase_parse(first, last, parser, boost::spirit::ascii::space, arith_ast);
-  if (r && first == last)
-  {
-    static const jsonast jsonconverter;
-    return boost::apply_visitor(jsonconverter, arith_ast);
-  }
-  else
-  {
-    throw std::invalid_argument("The arithmetic expression is malformed.\n");
-  }
-}
-
 }} // namespace sash::json
