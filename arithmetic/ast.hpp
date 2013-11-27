@@ -40,7 +40,6 @@ typedef binary_op<mulTag> mul_op;
 typedef binary_op<divTag> div_op;
 
 typedef long arithmetic_type;
-typedef bool boolean_expr;
 
 typedef boost::variant<
       arithmetic_type
@@ -90,10 +89,10 @@ struct neg_op
 
 struct if_body
 {
-  boolean_expr condition;
+  arithmetic_type condition;
   expression expr;
 
-  if_body(const boolean_expr& condition, const expression& expr)
+  if_body(const arithmetic_type& condition, const expression& expr)
   : condition(condition)
   , expr(expr)
   {}
@@ -127,7 +126,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
   sash::math::ast::if_body,
-  (sash::math::ast::boolean_expr, condition)
+  (sash::math::ast::arithmetic_type, condition)
   (sash::math::ast::expression, expr)
 );
 

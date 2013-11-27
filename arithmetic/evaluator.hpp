@@ -83,7 +83,6 @@ public:
 
   value_type operator()(const ast::neg_op& expr) const;
   value_type operator()(const ast::if_expr& expr) const;
-  bool operator()(const ast::boolean_expr& expr) const;
 };
 
 ast::arithmetic_type eval_expression(const std::string& expr);

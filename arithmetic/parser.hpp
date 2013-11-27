@@ -51,7 +51,6 @@ private:
   rule<std::string> var_expr;
   rule<ast::if_body> if_body;
   rule<ast::if_expr> if_expr;
-  rule<ast::boolean_expr> bool_expr;
 };
 
 // iterator type used to expose the underlying input stream.

@@ -14,8 +14,8 @@
 #ifndef SASH_MATH_PARSER_DEF_HPP
 #define SASH_MATH_PARSER_DEF_HPP
 
-#define BOOST_SPIRIT_DEBUG
-#define BOOST_SPIRIT_QI_DEBUG
+// #define BOOST_SPIRIT_DEBUG
+// #define BOOST_SPIRIT_QI_DEBUG
 #include "parser.hpp"
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/lexical_cast.hpp>
@@ -83,8 +83,7 @@ grammar<Iterator>::grammar()
   neg_expr %= ('-' >> factor);
 
   if_expr %= "if" >> (if_body % string("else if")) >> ("else" > expression) ;
-  if_body %= bool_expr >> ("then" > expression);
-  bool_expr %= bs::bool_;
+  if_body %= qi::ulong_ >> ("then" > expression);
 
   var_expr = (*alnum) [qi::_val = 
     phx::construct<std::string>(phx::begin(qi::_1), phx::end(qi::_1))] ;

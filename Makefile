@@ -34,9 +34,8 @@ BINDIR = /bin
 MANDIR = /usr/man/man1
 
 OBJS = sash.o cmds.o cmd_dd.o cmd_ed.o cmd_grep.o cmd_ls.o cmd_tar.o \
-	cmd_gzip.o cmd_find.o cmd_file.o cmd_chattr.o cmd_ar.o utils.o eval-upmc.o \
-	arithmetic/evaluator.o arithmetic/parser.o \
-        arithmetic/jsonast.o
+	cmd_gzip.o cmd_find.o cmd_file.o cmd_chattr.o cmd_ar.o utils.o \
+	arithmetic/evaluator.o arithmetic/parser.o arithmetic/jsonast.o
 
 sash:	$(OBJS)
 	$(CC) $(CPPFLAGS) -o sash $(OBJS) $(LIBS)
