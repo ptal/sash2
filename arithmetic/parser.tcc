@@ -68,7 +68,7 @@ grammar<Iterator>::grammar()
   if_expr %= "if" >> (if_body % string("else if")) >> ("else" > expression) ;
   if_body %= qi::ulong_ >> ("then" > expression);
 
-  var_expr = (*alnum) [qi::_val = 
+  var_expr = qi::lexeme[(*alnum)] [qi::_val = 
     phx::construct<std::string>(phx::begin(qi::_1), phx::end(qi::_1))] ;
 
   BOOST_SPIRIT_DEBUG_NODES(

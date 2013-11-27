@@ -21,18 +21,19 @@ template struct grammar<iterator_type>;
 
 long envvar_to_long(const std::string& var_name)
 {
-  char *envvar = getenv(var_name.c_str());
-  if(envvar == NULL)
+  char *envvar_raw = getenv(var_name.c_str());
+  if(envvar_raw == NULL)
   {
-    throw std::runtime_error("Empty environment variable inside arithmetic expression.");
+    throw std::runtime_error("Empty environment variable \'" + var_name + "\' inside arithmetic expression.");
   }
+  std::string envvar(envvar_raw, strlen(envvar_raw));
   try
   {
-    return boost::lexical_cast<long>(std::string(envvar, strlen(envvar)));
+    return boost::lexical_cast<long>(envvar_raw);
   }
   catch(...)
   {
-    throw std::runtime_error("Non-arithmetic variable inside arithmetic expression.");
+    throw std::runtime_error("Non-arithmetic variable inside arithmetic expression ("+var_name + " = " + envvar + ").");
   }
 }
 

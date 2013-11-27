@@ -12,10 +12,37 @@ C++ syntactic tree of arithmetic expressions.
 The classical erroneous cases of evaluation are:
 
 * Divide by zero: It triggers an exception of type "divide_by_zero".
-* Operator priority: 
+* Operator precedence: Handle by the definition of the grammar.
+
+We represent the AST with the help of Boost.Variant. See ast.hpp.
 
 Grammar
 =======
+
+Boost.Spirit is a LL parser and the intuitive definition of arithmetic grammar are left-recursive.
+We can transform the grammar quite easily to be right-recursive but the operator precedence becomes
+right-associative which is a problem.
+
+According to http://en.wikipedia.org/wiki/Left_recursion, we have three solutions:
+
+(a) rewrite the grammar to be left recursive.
+(b) rewrite the grammar with more nonterminals to force the correct precedence/associativity.
+(c) if using YACC or Bison, there are operator declarations, %left, %right and %nonassoc, which
+    tell the parser generator which associativity to force.
+
+Obviously (a) is impossible and (c) would impose us the rewrite everything in Yacc/Bison.
+
+The Boost.Spirit tutorial uses the solution (b), the problem remaining is that these examples don't 
+speak about AST generation but instead calculate in place the solution of the arithmetic expression,
+which is not what we want.
+
+We finally manage to get it work by using inherited attribute and lazy statment thanks to Boost.Phoenix.
+Please see parser.tcc for the grammar definition.
+
+Also note that the AST is nearly automatically generated because Boost.Spirit can match the rule and the
+type of the rule (under certain conditions, for example the type must be adapted by Boost.Fusion first, 
+see ast.hpp).
+
 
 New features
 ============
@@ -47,6 +74,19 @@ New features
 8
 > -echo $[if 1 then 1-5*2 else 2*4]
 -9
+
+(4) Correct expansion of environment variable.
+
+> -echo $[if 1 then 1-5*$THREE else $THREE]
+Empty environment variable 'THREE' inside arithmetic expression.
+> setenv THREE 3
+> -echo $[if 1 then 1-5*$THREE else $THREE]
+-14
+> -echo $[if 0 then 1-5*$THREE else $THREE]
+3
+> setenv THREE three
+> -echo $[if 0 then 1-5*$THREE else $THREE]
+Non-arithmetic variable inside arithmetic expression (THREE = three).
 
 
 Dependencies
